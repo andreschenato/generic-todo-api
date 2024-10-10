@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\TaskFilter;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\TaskCollection;
 use App\Http\Resources\TaskResource;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::where("user_id", auth()->user()->id)->get();
+        $filter = new TaskFilter();
+        $filterItems = $filter->transform($request);
+
+        $tasks = Task::where([[$filterItems], ["user_id", "=", auth()->user()->id]])->get();
         return new TaskCollection($tasks);
     }
 
