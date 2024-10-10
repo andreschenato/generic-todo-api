@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\TaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,3 +15,7 @@ Route::group(['prefix'=> 'auth', 'namespace'=>"App\Http\Controllers\Api"], funct
 });
 
 Route::post("/auth/logout", [UserController::class, "logout"])->middleware("auth:sanctum");
+
+Route::group(['namespace'=> 'App\Http\Controllers\Api'], function() {
+    Route::apiResource('tasks', TaskController::class)->middleware('auth:sanctum');
+});
